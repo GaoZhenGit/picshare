@@ -1,9 +1,5 @@
 package hk.hku.cs.picshare.post;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +14,7 @@ import android.widget.ImageView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import hk.hku.cs.picshare.BaseActivity;
+import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.R;
 
 public class ImagePreviewActivity extends BaseActivity {

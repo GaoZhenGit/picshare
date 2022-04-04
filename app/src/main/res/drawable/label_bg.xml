@@ -4,7 +4,7 @@
     <!-- 标签选中时的背景 -->
     <item android:state_selected="true">
         <shape>
-            <stroke android:width="2dp" android:color="#fb435b" />
+            <stroke android:width="2dp" android:color="@color/main" />
             <corners android:radius="8dp" />
             <solid android:color="@android:color/white" />
         </shape>

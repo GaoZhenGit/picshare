@@ -1,8 +1,6 @@
 package hk.hku.cs.picshare.post;
 
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,12 +16,11 @@ import com.tencent.yolov5ncnn.YoloV5Ncnn;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import hk.hku.cs.picshare.BaseActivity;
+import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.R;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;

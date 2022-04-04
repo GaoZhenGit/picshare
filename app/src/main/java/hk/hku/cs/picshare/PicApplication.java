@@ -1,6 +1,7 @@
 package hk.hku.cs.picshare;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 
 public class PicApplication extends Application {
     private static PicApplication instance;

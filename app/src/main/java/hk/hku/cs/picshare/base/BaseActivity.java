@@ -1,4 +1,4 @@
-package hk.hku.cs.picshare;
+package hk.hku.cs.picshare.base;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
-public abstract class BaseActivity extends Activity {
+import hk.hku.cs.picshare.R;
+
+public abstract class BaseActivity extends FragmentActivity {
     protected View mBackBtn;
 
     @Override
