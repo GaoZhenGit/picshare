@@ -11,13 +11,17 @@ import android.widget.Toast;
 
 import hk.hku.cs.picshare.post.PostActivity;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     private View mPublishBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         initView();
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_main;
     }
 
     private void initView() {

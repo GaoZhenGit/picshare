@@ -23,17 +23,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import hk.hku.cs.picshare.BaseActivity;
 import hk.hku.cs.picshare.R;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
 
-public class PostActivity extends Activity {
+public class PostActivity extends BaseActivity {
     private static final String Tag = "PostActivity";
     private static final int SELECT_IMAGE = 1;
     private static final int PREVIEW_IMAGE = 2;
     private static final int REQUIRED_SIZE = 280;
 
-    private View mBackBtn;
     private View mPublishBtn;
     private PicImageView mImageFirst;
     private LabelsView mLabelsView;
@@ -45,18 +45,16 @@ public class PostActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
         initView();
         initYolo();
     }
 
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_post;
+    }
+
     private void initView() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        mBackBtn = findViewById(R.id.btn_back);
-        mBackBtn.setOnClickListener(v -> finish());
         mPublishBtn = findViewById(R.id.btn_post);
         mPublishBtn.setOnClickListener(v -> publish());
         mImageFirst = findViewById(R.id.post_img_first);

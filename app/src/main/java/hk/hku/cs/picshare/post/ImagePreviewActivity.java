@@ -18,9 +18,10 @@ import android.widget.ImageView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import hk.hku.cs.picshare.BaseActivity;
 import hk.hku.cs.picshare.R;
 
-public class ImagePreviewActivity extends Activity {
+public class ImagePreviewActivity extends BaseActivity {
     public static final String PREVIEW_IMAGE_DATA = "PREVIEW_IMAGE_DATA";
     public static final int RESULT_CODE_DELETE = 234;
     private static final String Tag = "ImagePreviewActivity";
@@ -31,19 +32,17 @@ public class ImagePreviewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_preview);
         initView();
         initData();
     }
 
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_image_preview;
+    }
+
     private void initView() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
         imageView = findViewById(R.id.preview_img);
-        mBackBtn = findViewById(R.id.btn_back);
-        mBackBtn.setOnClickListener(v -> finish());
         mDeleteBtn = findViewById(R.id.btn_preview_delete);
         mDeleteBtn.setOnClickListener(v -> {
             setResult(RESULT_CODE_DELETE);
