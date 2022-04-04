@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.donkingliang.labels.LabelsView;
 import com.tencent.yolov5ncnn.YoloV5Ncnn;
 
 import java.io.FileNotFoundException;
@@ -29,14 +30,17 @@ import hk.hku.cs.picshare.lib.ThreadManager;
 public class PostActivity extends Activity {
     private static final String Tag = "PostActivity";
     private static final int SELECT_IMAGE = 1;
+    private static final int PREVIEW_IMAGE = 2;
     private static final int REQUIRED_SIZE = 280;
 
     private View mBackBtn;
     private View mPublishBtn;
     private PicImageView mImageFirst;
+    private LabelsView mLabelsView;
 
     private YoloV5Ncnn ncnn;
     private Bitmap mBitmapFirst;
+    private Uri mBitmapUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,19 @@ public class PostActivity extends Activity {
         mPublishBtn = findViewById(R.id.btn_post);
         mPublishBtn.setOnClickListener(v -> publish());
         mImageFirst = findViewById(R.id.post_img_first);
-        mImageFirst.setOnClickListener(v -> fetchPictureFromGallery());
+        mImageFirst.setOnClickListener(v -> {
+            if (mBitmapFirst == null) {
+                fetchPictureFromGallery();
+            } else {
+                Intent intent = new Intent(getBaseContext(), ImagePreviewActivity.class);
+                intent.putExtra(ImagePreviewActivity.PREVIEW_IMAGE_DATA, mBitmapUri);
+                startActivityForResult(intent, PREVIEW_IMAGE);
+            }
+        });
+
+        mLabelsView = findViewById(R.id.labels);
+        mLabelsView.clearAllSelect();
+        mLabelsView.setSelectType(LabelsView.SelectType.MULTI);
     }
 
     private void initYolo() {
@@ -80,17 +96,21 @@ public class PostActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            try {
-                if (requestCode == SELECT_IMAGE) {
-                    mBitmapFirst = decodeUri(selectedImage);
-//                    yourSelectedImage = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        if (requestCode == SELECT_IMAGE) {
+            if (resultCode == RESULT_OK && null != data) {
+                mBitmapUri = data.getData();
+                try {
+                    mBitmapFirst = decodeUri(mBitmapUri);
                     mImageFirst.setImageBitmap(mBitmapFirst);
-                    ThreadManager.getInstance().submit(() -> detect());
+                    mLabelsView.setLabels(null);
+                    ThreadManager.getInstance().submit(this::detect);
+                } catch (Exception e) {
+                    Log.e(Tag, e.getMessage(), e);
                 }
-            } catch (Exception e) {
-                Log.e(Tag, e.getMessage(), e);
+            }
+        } else if (requestCode == PREVIEW_IMAGE) {
+            if (resultCode == ImagePreviewActivity.RESULT_CODE_DELETE) {
+                cancel();
             }
         }
     }
@@ -147,6 +167,23 @@ public class PostActivity extends Activity {
         Bitmap bitmap = mBitmapFirst.copy(Bitmap.Config.ARGB_8888, true);
         YoloV5Ncnn.Obj[] objs = ncnn.Detect(bitmap, false);
         List<String> labels = Arrays.stream(objs).map(obj -> obj.label).distinct().collect(Collectors.toList());
+        int[] selectIndex = new int[labels.size()];
+        for (int i = 0; i < selectIndex.length; i++) {
+            selectIndex[i] = i;
+        }
         Log.i(Tag, "yolo detect:" + labels);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            mLabelsView.setLabels(labels);
+            if (labels.size() > 0) {
+                mLabelsView.setSelects(selectIndex);
+            }
+        });
+    }
+
+    private void cancel() {
+        mImageFirst.setImageResource(R.drawable.add);
+        mBitmapFirst = null;
+        mBitmapUri = null;
+        mLabelsView.setLabels(null);
     }
 }
