@@ -17,6 +17,10 @@ import com.tencent.yolov5ncnn.YoloV5Ncnn;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import hk.hku.cs.picshare.R;
 import hk.hku.cs.picshare.lib.PicImageView;
@@ -83,6 +87,7 @@ public class PostActivity extends Activity {
                     mBitmapFirst = decodeUri(selectedImage);
 //                    yourSelectedImage = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                     mImageFirst.setImageBitmap(mBitmapFirst);
+                    ThreadManager.getInstance().submit(() -> detect());
                 }
             } catch (Exception e) {
                 Log.e(Tag, e.getMessage(), e);
@@ -136,5 +141,12 @@ public class PostActivity extends Activity {
         Matrix matrix = new Matrix();
         matrix.postRotate(rotate);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void detect() {
+        Bitmap bitmap = mBitmapFirst.copy(Bitmap.Config.ARGB_8888, true);
+        YoloV5Ncnn.Obj[] objs = ncnn.Detect(bitmap, false);
+        List<String> labels = Arrays.stream(objs).map(obj -> obj.label).distinct().collect(Collectors.toList());
+        Log.i(Tag, "yolo detect:" + labels);
     }
 }

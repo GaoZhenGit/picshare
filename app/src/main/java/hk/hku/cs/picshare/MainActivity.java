@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tencent.yolov5ncnn.YoloV5Ncnn;
 
 import hk.hku.cs.picshare.post.PostActivity;
 
@@ -19,9 +18,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        YoloV5Ncnn ncnn = new YoloV5Ncnn();
-        boolean ret = ncnn.Init(getAssets());
-        Toast.makeText(this, "init:" + ret, Toast.LENGTH_SHORT).show();
     }
 
     private void initView() {
