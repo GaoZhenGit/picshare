@@ -1,7 +1,6 @@
 package hk.hku.cs.picshare.list;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,16 +9,23 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import hk.hku.cs.picshare.PicApplication;
 import hk.hku.cs.picshare.R;
+import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.base.BaseFragment;
+import hk.hku.cs.picshare.lib.NetworkManager;
+import hk.hku.cs.picshare.lib.ThreadManager;
 import hk.hku.cs.picshare.post.PostActivity;
 
 public class PictureListFragment extends BaseFragment {
     private View mStartPostBtn;
+    private RecyclerView mRecyclerView;
+    private PictureListAdapter mAdapter;
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_picture_list;
@@ -39,14 +45,34 @@ public class PictureListFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        initView();
+        loadData();
+        return mRoot;
+    }
+
+    private void initView() {
         mStartPostBtn = mRoot.findViewById(R.id.btn_start_post);
-        mStartPostBtn.setOnClickListener(new View.OnClickListener() {
+        mStartPostBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), PostActivity.class);
+            startActivity(intent);
+        });
+        mRecyclerView = mRoot.findViewById(R.id.pic_list_recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mAdapter = new PictureListAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void loadData() {
+        NetworkManager.getInstance().getPictureList(AccountManager.getInstance().getUid(), new NetworkManager.PicCallback<List<PictureItem>>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PostActivity.class);
-                startActivity(intent);
+            public void onSuccess(List<PictureItem> data) {
+                ThreadManager.getInstance().runOnUiThread(() -> mAdapter.setData(data));
+            }
+
+            @Override
+            public void onFail(String msg) {
+
             }
         });
-        return mRoot;
     }
 }
