@@ -21,6 +21,7 @@ import hk.hku.cs.picshare.account.AccountFragment;
 import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.base.BaseFragment;
 import hk.hku.cs.picshare.list.PictureListFragment;
+import hk.hku.cs.picshare.search.SearchFragment;
 
 public class MainActivity extends BaseActivity {
     private ViewPager2 mViewPager;
@@ -54,6 +55,9 @@ public class MainActivity extends BaseActivity {
                     tab.setText("list");
                     break;
                 case 1:
+                    tab.setText("search");
+                    break;
+                case 2:
                     tab.setText("account");
                     break;
             }
@@ -79,8 +83,10 @@ public class MainActivity extends BaseActivity {
 
     private void initFragments() {
         PictureListFragment pictureListFragment = new PictureListFragment();
+        SearchFragment searchFragment = new SearchFragment();
         AccountFragment accountFragment = new AccountFragment();
         mFragmentList.add(pictureListFragment);
+        mFragmentList.add(searchFragment);
         mFragmentList.add(accountFragment);
     }
 
