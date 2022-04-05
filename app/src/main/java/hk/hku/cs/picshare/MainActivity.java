@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity {
     {
         SharedPreferences sharedPreferences = getSharedPreferences("VerifyStatus", Context.MODE_PRIVATE);
         int CurrentUserVerifyStatus=sharedPreferences.getInt("CurrentUserVerify",0);
-        if(CurrentUserVerifyStatus==1)
+        if(CurrentUserVerifyStatus==0)
         {
             Intent JumpToLogin=new Intent(this,LoginActivity.class);
             startActivity(JumpToLogin);
