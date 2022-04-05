@@ -14,14 +14,18 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import hk.hku.cs.picshare.account.AccountManager;
+import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.lib.NetworkManager;
+import hk.hku.cs.picshare.lib.ThreadManager;
 
 public class LoginActivity extends Activity implements View.OnClickListener {
-    EditText InputUsername,InputPassword;
+    EditText InputUsername, InputPassword;
     Button LoginBtn;
-    TextView TextView_forgetpsw,TextView_Sign;
-    String inputusername_text,inputusername_psw;
+    TextView TextView_forgetpsw, TextView_Sign;
+    String inputusername_text, inputusername_psw;
     NetworkManager network;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +35,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         LoginBtn = (Button) findViewById(R.id.btn_login);
         TextView_forgetpsw = (TextView) findViewById(R.id.textview_forgetpsw);
         TextView_Sign = (TextView) findViewById(R.id.textview_sign);
-        network=NetworkManager.getInstance();
+        network = NetworkManager.getInstance();
 
         LoginBtn.setOnClickListener(this);
         TextView_forgetpsw.setOnClickListener(this);
@@ -40,33 +44,38 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.btn_login)
-        {
-            inputusername_text=InputUsername.getText().toString();
-            inputusername_psw=InputPassword.getText().toString();
-            Boolean VerifyUser=network.login(inputusername_text,inputusername_psw);
-            if(VerifyUser)
-            {
-                SharedPreferences sharedPreferences = getSharedPreferences("VerifyStatus", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("CurrentUserVerify", 1);
-                editor.commit();
-                Intent JumpToMain=new Intent(this,MainActivity.class);
-                this.finish();
-                startActivity(JumpToMain);
-            }
-            else
-            {
-                AlertDialog ErrorPsw=new AlertDialog.Builder(this).setTitle("Error").setMessage("Wrong username or password!").show();
-            }
+        if (view.getId() == R.id.btn_login) {
+            inputusername_text = InputUsername.getText().toString();
+            inputusername_psw = InputPassword.getText().toString();
+            AlertDialog waitDialog = new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Login")
+                    .setCancelable(false)
+                    .setMessage("Please wait...")
+                    .show();
+            network.login(inputusername_text, inputusername_psw, new NetworkManager.PicCallback<User>() {
+                @Override
+                public void onSuccess(User data) {
+                    AccountManager.getInstance().setLocalUserInfo(data.uid, data.name, data.token);
+                    ThreadManager.getInstance().runOnUiThread(() -> {
+                        waitDialog.dismiss();
+                        finish();
+                    });
+                }
 
-        }
-        else if(view.getId()==R.id.textview_forgetpsw)
-        {
+                @Override
+                public void onFail(String msg) {
+                    ThreadManager.getInstance().runOnUiThread(() -> {
+                        waitDialog.dismiss();
+                        new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Error")
+                                .setMessage("Wrong username or password!")
+                                .show();
+                    });
+                }
+            });
+        } else if (view.getId() == R.id.textview_forgetpsw) {
             //TBD
-        }
-        else if(view.getId()==R.id.textview_sign)
-        {
+        } else if (view.getId() == R.id.textview_sign) {
             //TBD
         }
     }

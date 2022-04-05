@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.google.android.material.tabs.TabLayout;
@@ -21,12 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hk.hku.cs.picshare.account.AccountFragment;
+import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.base.BaseFragment;
 import hk.hku.cs.picshare.list.PictureListFragment;
 import hk.hku.cs.picshare.search.SearchFragment;
 
 public class MainActivity extends BaseActivity {
+    private long mLastBackPressTime = 0;
     private ViewPager2 mViewPager;
     private MainPageAdapter mPageAdapter;
     private TabLayout mTabLayout;
@@ -36,9 +39,18 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkUserVerifyStatus();
-        initFragments();
-        initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AccountManager.getInstance().isLogin()) {
+            initFragments();
+            initView();
+        } else {
+            Intent JumpToLogin = new Intent(this, LoginActivity.class);
+            startActivity(JumpToLogin);
+        }
     }
 
     @Override
@@ -106,6 +118,17 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - mLastBackPressTime > 2000) {
+            Toast.makeText(getApplicationContext(), "press back button again to exit", Toast.LENGTH_SHORT).show();
+            mLastBackPressTime = System.currentTimeMillis();
+            return;
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private class MainPageAdapter extends FragmentStateAdapter {
         public MainPageAdapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);
@@ -122,17 +145,4 @@ public class MainActivity extends BaseActivity {
             return mFragmentList.size();
         }
     }
-
-    private void checkUserVerifyStatus()
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("VerifyStatus", Context.MODE_PRIVATE);
-        int CurrentUserVerifyStatus=sharedPreferences.getInt("CurrentUserVerify",0);
-        if(CurrentUserVerifyStatus==0)
-        {
-            Intent JumpToLogin=new Intent(this,LoginActivity.class);
-            startActivity(JumpToLogin);
-        }
-
-    }
-
 }

@@ -42,13 +42,25 @@ public class NetworkManager {
         mService = retrofit.create(NetworkService.class);
     }
 
-    public boolean login(String email, String password) {
+    public void login(String email, String password, PicCallback<User> callback) {
+        //todo mock
+        ThreadManager.getInstance().submit(() -> {
+            try {
+                Thread.sleep(2000);
+                if(email.equals("1")&&password.equals("1")) {
+                    User user = new User();
+                    user.name = email;
+                    user.uid = String.valueOf(email.hashCode());
+                    user.email = email;
+                    user.token = user.uid;
+                    callback.onSuccess(user);
+                } else {
+                    callback.onFail("wrong password!");
+                }
+            } catch (Exception e) {
 
-        if(email.equals("1")&&password.equals("1"))
-            return true;
-        else
-            return false;
-
+            }
+        });
     }
 
     public void testNetwork(Map<String, String> param, PicCallback<User> callback) {
