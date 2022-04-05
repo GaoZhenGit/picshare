@@ -42,7 +42,12 @@ public class NetworkManager {
         mService = retrofit.create(NetworkService.class);
     }
 
-    public void login(String email, String password) {
+    public boolean login(String email, String password) {
+
+        if(email.equals("1")&&password.equals("1"))
+            return true;
+        else
+            return false;
 
     }
 

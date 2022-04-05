@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +36,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkUserVerifyStatus();
         initFragments();
         initView();
     }
@@ -117,6 +121,18 @@ public class MainActivity extends BaseActivity {
         public int getItemCount() {
             return mFragmentList.size();
         }
+    }
+
+    private void checkUserVerifyStatus()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("VerifyStatus", Context.MODE_PRIVATE);
+        int CurrentUserVerifyStatus=sharedPreferences.getInt("CurrentUserVerify",0);
+        if(CurrentUserVerifyStatus==0)
+        {
+            Intent JumpToLogin=new Intent(this,LoginActivity.class);
+            startActivity(JumpToLogin);
+        }
+
     }
 
 }
