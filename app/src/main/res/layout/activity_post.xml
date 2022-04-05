@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:background="#f0f0f0"
     tools:context=".post.PostActivity">
 
     <RelativeLayout
@@ -15,34 +17,45 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <RelativeLayout
             android:id="@+id/btn_back"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:gravity="center"
-            android:text="Back"
-            android:textColor="@android:color/holo_blue_light"
-            android:textSize="20dp" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/back_black"
+                android:gravity="center"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="20dp" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/btn_post"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
             android:background="@drawable/post_btn_publish"
             android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="Publish"
             android:textColor="@android:color/white"
-            android:textSize="20dp" />
+            android:textSize="16dp" />
     </RelativeLayout>
 
     <EditText
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/post_content_bg"
         android:hint="Just share something..."
         android:minHeight="120dp"
         android:padding="15dp"
@@ -51,20 +64,65 @@
         app:layout_constraintTop_toBottomOf="@id/post_title_bar" />
 
     <LinearLayout
+        android:id="@+id/post_tag_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
+        android:clipChildren="false"
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/post_content">
 
-        <hk.hku.cs.picshare.lib.PicImageView
-            android:id="@+id/post_img_first"
-            android:src="@drawable/add"
-            android:scaleType="centerCrop"
+        <RelativeLayout
             android:layout_width="120dp"
-            android:layout_height="120dp" />
+            android:layout_height="120dp">
+
+            <hk.hku.cs.picshare.lib.PicImageView
+                android:id="@+id/post_img_first"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add" />
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/post_img_first_cancel"-->
+            <!--                android:layout_width="30dp"-->
+            <!--                android:layout_height="30dp"-->
+            <!--                android:layout_alignParentTop="true"-->
+            <!--                android:layout_alignParentRight="true"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:layout_marginRight="5dp"-->
+            <!--                android:background="@drawable/close_red"-->
+            <!--                android:visibility="visible" />-->
+        </RelativeLayout>
     </LinearLayout>
+
+    <com.donkingliang.labels.LabelsView
+        android:id="@+id/labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        app:isIndicator="false"
+        app:labelBackground="@drawable/label_bg"
+        app:labelTextColor="@drawable/label_text_color"
+        app:labelTextPaddingBottom="5dp"
+        app:labelTextPaddingLeft="10dp"
+        app:labelTextPaddingRight="10dp"
+        app:labelTextPaddingTop="5dp"
+        app:labelTextSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/post_tag_container"
+        app:lineMargin="10dp"
+        app:maxColumns="5"
+        app:maxLines="3"
+        app:maxSelect="5"
+        app:minSelect="1"
+        app:selectType="MULTI"
+        app:wordMargin="10dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

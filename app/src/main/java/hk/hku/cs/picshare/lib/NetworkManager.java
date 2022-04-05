@@ -2,14 +2,16 @@ package hk.hku.cs.picshare.lib;
 
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hk.hku.cs.picshare.account.User;
+import hk.hku.cs.picshare.list.PictureItem;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -64,6 +66,31 @@ public class NetworkManager {
             public void onFailure(Call<User> call, Throwable t) {
                 Log.i("NetworkManager", "fail");
                 callback.onFail(t.getMessage());
+            }
+        });
+    }
+
+    public void getPictureList(String uid, PicCallback<List<PictureItem>> callback) {
+        //todo mock
+        ThreadManager.getInstance().submit(() -> {
+            try {
+                Thread.sleep(5000);
+                List<PictureItem> mockData = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    PictureItem item = new PictureItem();
+                    item.image = "https://i0.hdslb.com/bfs/article/72585c1d8dce989dab9953035e7f92c7c8a46aed.jpg@942w_531h_progressive.webp";
+                    item.userName = "User" + i;
+                    item.content = "Content " + i + "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+                    item.uid = "uid" + i;
+                    for (int j = 0; j < i + 2; j++) {
+                        item.tags.add("Tag " + j);
+                    }
+                    item.avatar = "https://c-ssl.duitang.com/uploads/item/202004/17/20200417125937_bllwk.thumb.1000_0.jpg";
+                    mockData.add(item);
+                }
+                callback.onSuccess(mockData);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
     }
