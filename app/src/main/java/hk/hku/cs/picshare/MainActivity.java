@@ -59,6 +59,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
+        if (mViewPager != null) {
+            return;
+        }
         mViewPager = findViewById(R.id.fragment_view_pager);
         mPageAdapter = new MainPageAdapter(this);
         mViewPager.setAdapter(mPageAdapter);
