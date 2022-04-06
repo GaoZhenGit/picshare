@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:background="@color/appback">
 
     <hk.hku.cs.picshare.lib.PicImageView
         android:id="@+id/list_item_avatar"
