@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.lib.NetworkManager;
+import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
 
 public class LoginActivity extends Activity implements View.OnClickListener {
@@ -24,6 +25,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     Button LoginBtn;
     TextView TextView_forgetpsw, TextView_Sign;
     String inputusername_text, inputusername_psw;
+    PicImageView Logo;
     NetworkManager network;
 
     @Override
@@ -36,10 +38,12 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         TextView_forgetpsw = (TextView) findViewById(R.id.textview_forgetpsw);
         TextView_Sign = (TextView) findViewById(R.id.textview_sign);
         network = NetworkManager.getInstance();
+        Logo=findViewById(R.id.picImageView);
 
         LoginBtn.setOnClickListener(this);
         TextView_forgetpsw.setOnClickListener(this);
         TextView_Sign.setOnClickListener(this);
+        Logo.load("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.51yuansu.com%2Fpic2%2Fcover%2F00%2F31%2F74%2F5810c81f007fd_610.jpg&refer=http%3A%2F%2Fpic.51yuansu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651839457&t=92bf2eb546d47656df66c85040040bc5");
     }
 
     @Override

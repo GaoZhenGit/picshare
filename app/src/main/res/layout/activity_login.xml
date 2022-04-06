@@ -21,18 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_password" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/default_avatar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        tools:srcCompat="@tools:sample/avatars[1]" />
-
     <EditText
         android:id="@+id/editText_username"
         android:layout_width="wrap_content"
@@ -68,15 +56,18 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="68dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="10dp"
-        android:text="PICSHARE"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
+        android:text="PICSHARE"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#018786"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/picImageView" />
 
     <TextView
         android:id="@+id/textview_forgetpsw"
@@ -103,5 +94,16 @@
         app:layout_constraintStart_toEndOf="@+id/textview_forgetpsw"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9" />
+
+    <hk.hku.cs.picshare.lib.PicImageView
+        android:id="@+id/picImageView"
+        android:scaleType="fitXY"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,12 +20,13 @@ import hk.hku.cs.picshare.MainActivity;
 import hk.hku.cs.picshare.PicApplication;
 import hk.hku.cs.picshare.R;
 import hk.hku.cs.picshare.base.BaseFragment;
+import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.list.PictureListAdapter;
 import hk.hku.cs.picshare.post.PostActivity;
 
 public class AccountFragment extends BaseFragment implements View.OnClickListener{
     TextView TextView_Userinfo, TextView_tag1,TextView_tag2, TextView_tag3,TextView_settings,TextView_Nickname,TextView_AccountID;
-    ImageView Profile_Photo;
+    PicImageView Profile_Photo;
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_account;
@@ -97,7 +98,7 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         //Interact with User Class
         TextView_Nickname.setText("Cheng");
         TextView_AccountID.setText("PicShare ID: C952914742");
-
+        Profile_Photo.load("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201705%2F28%2F20170528221848_Lyut5.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651839087&t=8a68d2f4e6674b0d37e09bc10e5e4981");
         //TBD: Add photo!
         //Profile_Photo
     }
