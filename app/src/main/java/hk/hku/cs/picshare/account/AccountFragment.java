@@ -93,9 +93,11 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         TextView_tag3.setOnClickListener(this);
         TextView_settings.setOnClickListener(this);
 
+
+        //Interact with User Class
         TextView_Nickname.setText("Cheng");
-        TextView_Nickname.setTextSize(25);
         TextView_AccountID.setText("PicShare ID: C952914742");
+
         //TBD: Add photo!
         //Profile_Photo
     }

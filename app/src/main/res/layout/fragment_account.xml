@@ -99,6 +99,7 @@
         android:text="Cheng"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/image_profile_photo"
         app:layout_constraintTop_toTopOf="@+id/ac_textview_userinfo" />

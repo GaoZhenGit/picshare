@@ -2,6 +2,12 @@ package hk.hku.cs.picshare;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,15 +18,26 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.lib.NetworkManager;
+import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
+import hk.hku.cs.picshare.post.ImagePreviewActivity;
 
 public class SigninActivity extends Activity implements View.OnClickListener {
     EditText SignName,SignNumber,SignPsw,SignPsw2;
+    private static final String Tag = "Sign up Activity";
     Button SignConfirm;
-    ImageView SignImage;
     NetworkManager network;
+    private PicImageView SignPic;
+    private static final int SELECT_IMAGE = 1;
+    private static final int PREVIEW_IMAGE = 2;
+    private static final int REQUIRED_SIZE = 280;
+    private Uri mBitmapUri;
+    private Bitmap SignBitmap;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +47,11 @@ public class SigninActivity extends Activity implements View.OnClickListener {
         SignPsw=findViewById(R.id.edit_sign_psw);
         SignPsw2=findViewById(R.id.edit_sign_psw2);
         SignConfirm=findViewById(R.id.btn_sign_confirm);
-        SignImage=findViewById(R.id.img_sign_userpic);
+        SignPic = findViewById(R.id.img_sign_userpic);
         network = NetworkManager.getInstance();
 
         SignConfirm.setOnClickListener(this);
+        SignPic.setOnClickListener(this);
     }
 
     @Override
@@ -45,39 +63,140 @@ public class SigninActivity extends Activity implements View.OnClickListener {
             strPhone=SignNumber.getText().toString();
             strPsw=SignPsw.getText().toString();
             strPsw2=SignPsw2.getText().toString();
-            if(strPsw.equals(strPsw2))
+            //这里需要写一个传出图片的函数-->SignBitmap
+            if(strName.equals("")||strPhone.equals("")||strPsw.equals("")||strPsw2.equals(""))
             {
-                network.signin(strName,strPhone,strPsw,new NetworkManager.PicCallback<User>(){
-                    @Override
-                    public void onSuccess(User data) {
-                        ThreadManager.getInstance().runOnUiThread(() -> {
-                            AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
-                                    .setTitle("Success")
-                                    .setMessage("Thank you for sign up")
-                                    .show();
-                        });
-
-                    }
-
-                    @Override
-                    public void onFail(String msg) {
-                        ThreadManager.getInstance().runOnUiThread(() -> {
-                            AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
-                                    .setTitle("Error")
-                                    .setMessage(msg)
-                                    .show();
-                        });
-                    }
-                });
+                AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
+                        .setTitle("Error")
+                        .setMessage("Please input all the information required")
+                        .show();
             }
             else
             {
-                AlertDialog waitDialog = new AlertDialog.Builder(this)
-                        .setTitle("Error")
-                        .setMessage("Please check again your password.")
-                        .show();
+                if(strPsw.equals(strPsw2))
+                {
+                    network.signin(strName,strPhone,strPsw,new NetworkManager.PicCallback<User>(){
+                        @Override
+                        public void onSuccess(User data) {
+                            ThreadManager.getInstance().runOnUiThread(() -> {
+                                AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
+                                        .setTitle("Success")
+                                        .setMessage("Thank you for sign up")
+                                        .show();
+                            });
+
+                        }
+
+                        @Override
+                        public void onFail(String msg) {
+                            ThreadManager.getInstance().runOnUiThread(() -> {
+                                AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
+                                        .setTitle("Error")
+                                        .setMessage(msg)
+                                        .show();
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    AlertDialog waitDialog = new AlertDialog.Builder(this)
+                            .setTitle("Error")
+                            .setMessage("Please check again your password.")
+                            .show();
+                }
+            }
+
+        }
+        else if(view.getId()==R.id.img_sign_userpic)
+        {
+            if (SignBitmap == null) {
+                fetchPictureFromGallery();
+            } else {
+                Intent intent = new Intent(getBaseContext(), ImagePreviewActivity.class);
+                intent.putExtra(ImagePreviewActivity.PREVIEW_IMAGE_DATA, mBitmapUri);
+                startActivityForResult(intent, SELECT_IMAGE);
             }
         }
 
+    }
+
+    private void fetchPictureFromGallery() {
+        Intent i = new Intent(Intent.ACTION_PICK);
+        i.setType("image/*");
+        startActivityForResult(i, SELECT_IMAGE);
+    }
+
+    private void cancel() {
+        SignPic.setImageResource(R.drawable.add);
+        SignBitmap = null;
+        mBitmapUri = null;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE) {
+            if (resultCode == RESULT_OK && null != data) {
+                mBitmapUri = data.getData();
+                try {
+                    SignBitmap = decodeUri(mBitmapUri);
+                    SignPic.setImageBitmap(SignBitmap);
+                } catch (Exception e) {
+                    Log.e(Tag, e.getMessage(), e);
+                }
+            }
+        } else if (requestCode == PREVIEW_IMAGE) {
+            if (resultCode == ImagePreviewActivity.RESULT_CODE_DELETE) {
+                cancel();
+            }
+        }
+    }
+
+    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE
+                    || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+
+        // Rotate according to EXIF
+        int rotate = 0;
+        try {
+            ExifInterface exif = new ExifInterface(getContentResolver().openInputStream(selectedImage));
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (IOException e) {
+            Log.e(Tag, e.getMessage(), e);
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotate);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
