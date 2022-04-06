@@ -63,6 +63,23 @@ public class NetworkManager {
         });
     }
 
+    public void signin(String name,String email,String psw,PicCallback<User> callback)
+    {
+        ThreadManager.getInstance().submit(() -> {
+            try {
+                //Thread.sleep(2000);
+                if(true) {
+                    User user = new User();
+                    callback.onSuccess(user);
+                } else {
+                    callback.onFail("wrong password!");
+                }
+            } catch (Exception e) {
+
+            }
+        });
+    }
+
     public void testNetwork(Map<String, String> param, PicCallback<User> callback) {
         Map<String, String> map = new HashMap<>();
         map.put("system", "Android");

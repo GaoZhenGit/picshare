@@ -55,23 +55,23 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View view) {
         if (view.getId() == R.id.ac_textview_userinfo)
         {
-
+            //TBD
         }
         else if(view.getId() == R.id.ac_textview_tag1)
         {
-
+            //TBD
         }
         else if(view.getId() == R.id.ac_textview_tag2)
         {
-
+            //TBD
         }
         else if(view.getId() == R.id.ac_textview_tag3)
         {
-
+            //TBD
         }
         else if(view.getId() == R.id.ac_textview_setting)
         {
-
+            //TBD
         }
 
 
@@ -96,5 +96,7 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         TextView_Nickname.setText("Cheng");
         TextView_Nickname.setTextSize(25);
         TextView_AccountID.setText("PicShare ID: C952914742");
+        //TBD: Add photo!
+        //Profile_Photo
     }
 }

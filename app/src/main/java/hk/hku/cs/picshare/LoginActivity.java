@@ -76,7 +76,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         } else if (view.getId() == R.id.textview_forgetpsw) {
             //TBD
         } else if (view.getId() == R.id.textview_sign) {
-            //TBD
+            Intent JumpToSign = new Intent(this, SigninActivity.class);
+            startActivity(JumpToSign);
         }
     }
 
