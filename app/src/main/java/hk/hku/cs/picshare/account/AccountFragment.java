@@ -25,7 +25,7 @@ import hk.hku.cs.picshare.list.PictureListAdapter;
 import hk.hku.cs.picshare.post.PostActivity;
 
 public class AccountFragment extends BaseFragment implements View.OnClickListener{
-    TextView TextView_Userinfo, TextView_tag1,TextView_tag2, TextView_tag3,TextView_settings,TextView_Nickname,TextView_AccountID;
+    TextView TextView_Userinfo, TextView_tag1,TextView_tag2, TextView_tag3,TextView_settings,TextView_Nickname,TextView_AccountID,TextView_Logout;
     PicImageView Profile_Photo;
     @Override
     protected int getLayoutResId() {
@@ -73,6 +73,9 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         else if(view.getId() == R.id.ac_textview_setting)
         {
             //TBD
+        } else if (view.getId() == R.id.ac_textview_logout) {
+            AccountManager.getInstance().clearUserInfo();
+            startActivity(new Intent(getContext(), LoginActivity.class));
         }
 
 
@@ -87,12 +90,14 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         TextView_Nickname= mRoot.findViewById(R.id.textview_user_nickname);
         TextView_AccountID= mRoot.findViewById(R.id.textView_account_id);
         Profile_Photo=mRoot.findViewById(R.id.image_profile_photo);
+        TextView_Logout = mRoot.findViewById(R.id.ac_textview_logout);
 
         TextView_Userinfo.setOnClickListener(this);
         TextView_tag1.setOnClickListener(this);
         TextView_tag2.setOnClickListener(this);
         TextView_tag3.setOnClickListener(this);
         TextView_settings.setOnClickListener(this);
+        TextView_Logout.setOnClickListener(this);
 
 
         //Interact with User Class

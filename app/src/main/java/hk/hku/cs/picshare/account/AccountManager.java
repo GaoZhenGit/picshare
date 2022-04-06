@@ -54,4 +54,12 @@ public class AccountManager {
         editor.putString(KEY_TOKEN, token);
         editor.commit();
     }
+
+    public void clearUserInfo() {
+        SharedPreferences.Editor editor = getPreference().edit();
+        editor.putString(KEY_UID, "");
+        editor.putString(KEY_USER_NAME, "");
+        editor.putString(KEY_TOKEN, "");
+        editor.commit();
+    }
 }

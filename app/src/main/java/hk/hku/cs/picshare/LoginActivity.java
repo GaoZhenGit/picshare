@@ -43,7 +43,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         LoginBtn.setOnClickListener(this);
         TextView_forgetpsw.setOnClickListener(this);
         TextView_Sign.setOnClickListener(this);
-        Logo.load("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.51yuansu.com%2Fpic2%2Fcover%2F00%2F31%2F74%2F5810c81f007fd_610.jpg&refer=http%3A%2F%2Fpic.51yuansu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651839457&t=92bf2eb546d47656df66c85040040bc5");
     }
 
     @Override

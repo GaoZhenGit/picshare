@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.list.PictureItem;
 import okhttp3.MediaType;
@@ -78,6 +79,11 @@ public class NetworkManager {
 
             }
         });
+    }
+
+    public void logout() {
+        String uid = AccountManager.getInstance().getUid();
+
     }
 
     public void testNetwork(Map<String, String> param, PicCallback<User> callback) {

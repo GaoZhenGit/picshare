@@ -112,4 +112,22 @@
         app:layout_constraintTop_toTopOf="@+id/ac_textview_userinfo"
         app:layout_constraintVertical_bias="0.5"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/ac_textview_logout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/textview_settings"
+        android:clickable="true"
+        android:gravity="center_vertical|left"
+        android:longClickable="true"
+        android:paddingLeft="40dp"
+        android:text="logout"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/holo_red_light"
+        android:textIsSelectable="false"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/ac_textview_setting"
+        tools:ignore="RtlCompat"
+        tools:layout_editor_absoluteX="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

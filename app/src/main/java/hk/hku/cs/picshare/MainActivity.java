@@ -101,6 +101,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initFragments() {
+        if (mFragmentList.size() > 0) {
+            return;
+        }
         PictureListFragment pictureListFragment = new PictureListFragment();
         SearchFragment searchFragment = new SearchFragment();
         AccountFragment accountFragment = new AccountFragment();
