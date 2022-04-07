@@ -72,6 +72,15 @@ public class PicImageView extends androidx.appcompat.widget.AppCompatImageView {
                 .into(this);
     }
 
+    public void loadRound(String url) {
+        Context context = getContext();
+        Glide.with(context)
+                .load(url)
+                .circleCrop()
+                .placeholder(mDefaultDrawable)
+                .into(this);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mIsSquare) {

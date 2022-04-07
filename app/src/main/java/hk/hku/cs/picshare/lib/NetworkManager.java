@@ -114,7 +114,7 @@ public class NetworkManager {
         //todo mock
         ThreadManager.getInstance().submit(() -> {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 List<PictureItem> mockData = new ArrayList<>();
                 for (int i = 0; i < 10; i++) {
                     PictureItem item = new PictureItem();

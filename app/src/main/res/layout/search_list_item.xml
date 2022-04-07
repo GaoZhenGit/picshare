@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="5dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <hk.hku.cs.picshare.lib.PicImageView
+        android:id="@+id/list_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:square="true"
+        tools:layout_height="220dp"
+        tools:layout_width="180dp" />
+
+    <hk.hku.cs.picshare.lib.PicImageView
+        android:id="@+id/list_item_avatar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/list_item_labels"
+        android:layout_marginTop="10dp" />
+
+    <com.donkingliang.labels.LabelsView
+        android:id="@+id/list_item_labels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_image"
+        android:layout_alignLeft="@id/list_item_image"
+        android:layout_alignRight="@id/list_item_image"
+        android:layout_marginTop="5dp"
+        app:isIndicator="false"
+        app:labelBackground="@drawable/label_bg"
+        app:labelTextColor="@drawable/label_text_color"
+        app:labelTextPaddingBottom="5dp"
+        app:labelTextPaddingLeft="10dp"
+        app:labelTextPaddingRight="10dp"
+        app:labelTextPaddingTop="5dp"
+        app:labelTextSize="8sp"
+        app:lineMargin="5dp"
+        app:maxColumns="5"
+        app:maxLines="1"
+        app:maxSelect="5"
+        app:minSelect="1"
+        app:selectType="NONE"
+        app:wordMargin="10dp" />
+
+    <TextView
+        android:id="@+id/list_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/list_item_avatar"
+        android:layout_alignRight="@id/list_item_image"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/list_item_avatar"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="qwertyuiop[asdfghjklzxcvbnmqwertyuioasdfghjxcv" />
+
+</RelativeLayout>
