@@ -58,7 +58,7 @@ public class PictureListFragment extends BaseFragment {
         });
         mRecyclerView = mRoot.findViewById(R.id.pic_list_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mAdapter = new PictureListAdapter();
+        mAdapter = new PictureListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

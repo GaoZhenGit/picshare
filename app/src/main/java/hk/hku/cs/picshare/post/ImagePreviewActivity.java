@@ -1,5 +1,6 @@
 package hk.hku.cs.picshare.post;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,21 +8,26 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.R;
+import hk.hku.cs.picshare.lib.PicImageView;
 
 public class ImagePreviewActivity extends BaseActivity {
     public static final String PREVIEW_IMAGE_DATA = "PREVIEW_IMAGE_DATA";
+    public static final String PREVIEW_IMAGE_URL = "PREVIEW_IMAGE_URL";
     public static final int RESULT_CODE_DELETE = 234;
     private static final String Tag = "ImagePreviewActivity";
-    private ImageView imageView;
+    private PicImageView imageView;
     private View mDeleteBtn;
     private View mBackBtn;
 
@@ -39,6 +45,7 @@ public class ImagePreviewActivity extends BaseActivity {
 
     private void initView() {
         imageView = findViewById(R.id.preview_img);
+        imageView.enableZoom(true);
         mDeleteBtn = findViewById(R.id.btn_preview_delete);
         mDeleteBtn.setOnClickListener(v -> {
             setResult(RESULT_CODE_DELETE);
@@ -49,11 +56,27 @@ public class ImagePreviewActivity extends BaseActivity {
     private void initData() {
         Intent intent = getIntent();
         Uri uri = intent.getParcelableExtra(PREVIEW_IMAGE_DATA);
-        try {
-            Bitmap bitmap = decodeUri(uri);
-            imageView.setImageBitmap(bitmap);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (uri != null) {
+            try {
+                Bitmap bitmap = decodeUri(uri);
+                imageView.setImageBitmap(bitmap);
+                Glide.with(this)
+                        .load(bitmap)
+                        .fitCenter()
+                        .into(imageView);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            mDeleteBtn.setVisibility(View.VISIBLE);
+        }
+
+        String url = intent.getStringExtra(PREVIEW_IMAGE_URL);
+        if (!TextUtils.isEmpty(url)) {
+            Glide.with(this)
+                    .load(url)
+                    .fitCenter()
+                    .into(imageView);
+            mDeleteBtn.setVisibility(View.GONE);
         }
     }
 
