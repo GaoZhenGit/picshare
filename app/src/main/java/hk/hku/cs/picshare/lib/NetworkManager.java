@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import hk.hku.cs.picshare.account.AccountManager;
+import hk.hku.cs.picshare.account.LoginRsp;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.list.PictureItem;
 import hk.hku.cs.picshare.post.ImageRsp;
@@ -70,23 +71,31 @@ public class NetworkManager {
         });
     }
 
-    public void login(String email, String password, PicCallback<User> callback) {
-        //todo mock
-        ThreadManager.getInstance().submit(() -> {
-            try {
-                Thread.sleep(2000);
-                if(email.equals("1")&&password.equals("1")) {
-                    User user = new User();
-                    user.name = email;
-                    user.uid = String.valueOf(email.hashCode());
-                    user.email = email;
-                    user.token = user.uid;
-                    callback.onSuccess(user);
+    public void login(String email, String password, PicCallback<LoginRsp> callback) {
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("password", password);
+        Map<String, Object> reqMap = new HashMap<>();
+        reqMap.put("user", userMap);
+        Gson gson = new Gson();
+        String reqJson = gson.toJson(reqMap);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), reqJson);
+        Call<LoginRsp> call = mService.login(requestBody);
+        call.enqueue(new Callback<LoginRsp>() {
+            @Override
+            public void onResponse(Call<LoginRsp> call, Response<LoginRsp> response) {
+                if (response.code() != 200) {
+                    callback.onFail("code:" + response.code());
+                } else if(response.body().result.equals("success")) {
+                    callback.onSuccess(response.body());
                 } else {
-                    callback.onFail("wrong password!");
+                    callback.onFail(response.body().failReason);
                 }
-            } catch (Exception e) {
+            }
 
+            @Override
+            public void onFailure(Call<LoginRsp> call, Throwable t) {
+                callback.onFail(t.getMessage());
             }
         });
     }
@@ -185,11 +194,13 @@ public class NetworkManager {
         Call<ImageRsp> imageUpload(@Part MultipartBody.Part imgs);
         @POST("register")
         Call<Rsp> register(@Body RequestBody body);
+        @POST("login")
+        Call<LoginRsp> login(@Body RequestBody body);
     }
 
     public static class Rsp {
-        String result;
-        String failReason;
+        public String result;
+        public String failReason;
     }
 
     public interface PicCallback<T> {

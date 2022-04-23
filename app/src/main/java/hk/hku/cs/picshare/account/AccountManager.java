@@ -1,19 +1,16 @@
 package hk.hku.cs.picshare.account;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import hk.hku.cs.picshare.LoginActivity;
 import hk.hku.cs.picshare.PicApplication;
-import hk.hku.cs.picshare.lib.NetworkManager;
 
 public class AccountManager {
     private static final String KEY_ACCOUNT = "KEY_ACCOUNT";
     private static final String KEY_UID = "KEY_UID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
-    private static final String KEY_TOKEN = "KEY_TOKEN";
+    private static final String KEY_EMAIL = "KEY_EMAIL";
 
     private static class InstanceHolder {
         private static AccountManager instance = new AccountManager();
@@ -24,15 +21,15 @@ public class AccountManager {
     }
 
     public boolean isLogin() {
-        if (!TextUtils.isEmpty(getToken()) && !TextUtils.isEmpty(getUserName()) && !TextUtils.isEmpty(getUid())) {
+        if (!TextUtils.isEmpty(getEmail()) && !TextUtils.isEmpty(getUserName()) && !TextUtils.isEmpty(getUid())) {
             return true;
         } else {
             return false;
         }
     }
 
-    public String getToken() {
-        return getPreference().getString(KEY_TOKEN, "");
+    public String getEmail() {
+        return getPreference().getString(KEY_EMAIL, "");
     }
 
     public String getUserName() {
@@ -47,11 +44,11 @@ public class AccountManager {
         return PicApplication.getInstance().getSharedPreferences(KEY_ACCOUNT, Context.MODE_PRIVATE);
     }
 
-    public void setLocalUserInfo(String uid, String userName, String token) {
+    public void setLocalUserInfo(String uid, String userName, String email) {
         SharedPreferences.Editor editor = getPreference().edit();
         editor.putString(KEY_UID, uid);
         editor.putString(KEY_USER_NAME, userName);
-        editor.putString(KEY_TOKEN, token);
+        editor.putString(KEY_EMAIL, email);
         editor.commit();
     }
 
@@ -59,7 +56,7 @@ public class AccountManager {
         SharedPreferences.Editor editor = getPreference().edit();
         editor.putString(KEY_UID, "");
         editor.putString(KEY_USER_NAME, "");
-        editor.putString(KEY_TOKEN, "");
+        editor.putString(KEY_EMAIL, "");
         editor.commit();
     }
 }
