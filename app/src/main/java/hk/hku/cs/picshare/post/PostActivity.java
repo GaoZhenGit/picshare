@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.donkingliang.labels.LabelsView;
+import com.google.gson.JsonObject;
 import com.tencent.yolov5ncnn.YoloV5Ncnn;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 
 import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.R;
+import hk.hku.cs.picshare.lib.NetworkManager;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
 
@@ -38,6 +42,7 @@ public class PostActivity extends BaseActivity {
     private YoloV5Ncnn ncnn;
     private Bitmap mBitmapFirst;
     private Uri mBitmapUri;
+    private File mCacheImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +84,21 @@ public class PostActivity extends BaseActivity {
     }
 
     private void publish() {
+        if (mCacheImage != null) {
+            NetworkManager.getInstance().uploadImage(mCacheImage, new NetworkManager.PicCallback<ImageRsp>() {
+                @Override
+                public void onSuccess(ImageRsp data) {
+                    Log.i(Tag, "upload image success " + data);
+                }
 
+                @Override
+                public void onFail(String msg) {
+                    Log.i(Tag, "upload image fail:" + msg);
+                }
+            });
+        } else {
+
+        }
     }
 
     private void fetchPictureFromGallery() {
@@ -99,6 +118,7 @@ public class PostActivity extends BaseActivity {
                     mImageFirst.setImageBitmap(mBitmapFirst);
                     mLabelsView.setLabels(null);
                     ThreadManager.getInstance().submit(this::detect);
+                    saveImageToDiskCache();
                 } catch (Exception e) {
                     Log.e(Tag, e.getMessage(), e);
                 }
@@ -180,5 +200,19 @@ public class PostActivity extends BaseActivity {
         mBitmapFirst = null;
         mBitmapUri = null;
         mLabelsView.setLabels(null);
+    }
+
+    private void saveImageToDiskCache() {
+        try {
+            mCacheImage = new File(getCacheDir() + File.separator + System.currentTimeMillis() + ".jpg");
+            FileOutputStream out = new FileOutputStream(mCacheImage);
+            mBitmapFirst.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+            Log.i(Tag, "saveImageToDiskCache success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            mCacheImage = null;
+        }
     }
 }

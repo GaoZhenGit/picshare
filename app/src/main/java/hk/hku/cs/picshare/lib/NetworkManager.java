@@ -4,7 +4,9 @@ import android.os.Build;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,9 @@ import java.util.Map;
 import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.list.PictureItem;
+import hk.hku.cs.picshare.post.ImageRsp;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,10 +25,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public class NetworkManager {
-    private static final String baseUrl = "http://api.androidhive.info/";
+    private static final String baseUrl = "http://192.168.0.105:8080/";
     private static class InstanceHolder {
         private static NetworkManager instance = new NetworkManager();
     }
@@ -41,6 +47,23 @@ public class NetworkManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = retrofit.create(NetworkService.class);
+    }
+
+    public void uploadImage(File imageFile, PicCallback<ImageRsp> callback) {
+        String fileName = imageFile.getName();
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("fileName", fileName, requestFile);
+        mService.imageUpload(part).enqueue(new Callback<ImageRsp>() {
+            @Override
+            public void onResponse(Call<ImageRsp> call, Response<ImageRsp> response) {
+                callback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ImageRsp> call, Throwable t) {
+                callback.onFail(t.getMessage());
+            }
+        });
     }
 
     public void login(String email, String password, PicCallback<User> callback) {
@@ -138,6 +161,9 @@ public class NetworkManager {
     public interface NetworkService {
         @POST("volley/person_object.json")
         Call<User> test(@Body RequestBody body);
+        @POST("imageUpload")
+        @Multipart
+        Call<ImageRsp> imageUpload(@Part MultipartBody.Part imgs);
     }
 
     public interface PicCallback<T> {
