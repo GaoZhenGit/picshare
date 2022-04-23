@@ -30,7 +30,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public class NetworkManager {
-    private static final String baseUrl = "http://192.168.0.105:8080/";
+    public static final String baseUrl = "http://192.168.0.105:8080/";
     private static class InstanceHolder {
         private static NetworkManager instance = new NetworkManager();
     }
@@ -56,7 +56,11 @@ public class NetworkManager {
         mService.imageUpload(part).enqueue(new Callback<ImageRsp>() {
             @Override
             public void onResponse(Call<ImageRsp> call, Response<ImageRsp> response) {
-                callback.onSuccess(response.body());
+                if (response.body().result.equals("success")) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(response.body().failReason);
+                }
             }
 
             @Override
@@ -87,19 +91,34 @@ public class NetworkManager {
         });
     }
 
-    public void signin(String name,String email,String psw,PicCallback<User> callback)
-    {
-        ThreadManager.getInstance().submit(() -> {
-            try {
-                //Thread.sleep(2000);
-                if(true) {
-                    User user = new User();
-                    callback.onSuccess(user);
+    public void signin(String name,String email,String psw,String avatar, PicCallback<Rsp> callback) {
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("name", name);
+        userMap.put("email", email);
+        userMap.put("avatar", avatar);
+        userMap.put("password", psw);
+        userMap.put("desc", "");
+        Map<String, Object> reqMap = new HashMap<>();
+        reqMap.put("user", userMap);
+        Gson gson = new Gson();
+        String reqJson = gson.toJson(reqMap);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), reqJson);
+        Call<Rsp> call = mService.register(requestBody);
+        call.enqueue(new Callback<Rsp>() {
+            @Override
+            public void onResponse(Call<Rsp> call, Response<Rsp> response) {
+                if (response.code() != 200) {
+                    callback.onFail("code:" + response.code());
+                } else if(response.body().result.equals("success")) {
+                    callback.onSuccess(response.body());
                 } else {
-                    callback.onFail("wrong password!");
+                    callback.onFail(response.body().failReason);
                 }
-            } catch (Exception e) {
+            }
 
+            @Override
+            public void onFailure(Call<Rsp> call, Throwable t) {
+                callback.onFail(t.getMessage());
             }
         });
     }
@@ -164,6 +183,13 @@ public class NetworkManager {
         @POST("imageUpload")
         @Multipart
         Call<ImageRsp> imageUpload(@Part MultipartBody.Part imgs);
+        @POST("register")
+        Call<Rsp> register(@Body RequestBody body);
+    }
+
+    public static class Rsp {
+        String result;
+        String failReason;
     }
 
     public interface PicCallback<T> {

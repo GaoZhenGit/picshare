@@ -1,9 +1,9 @@
 package hk.hku.cs.picshare.post;
 
 public class ImageRsp {
-    String result;
-    String failReason;
-    String urlSuffix;
+    public String result;
+    public String failReason;
+    public String urlSuffix;
 
     @Override
     public String toString() {

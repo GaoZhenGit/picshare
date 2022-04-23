@@ -15,10 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import hk.hku.cs.picshare.account.User;
@@ -26,10 +29,11 @@ import hk.hku.cs.picshare.lib.NetworkManager;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
 import hk.hku.cs.picshare.post.ImagePreviewActivity;
+import hk.hku.cs.picshare.post.ImageRsp;
 
 public class SigninActivity extends Activity implements View.OnClickListener {
     EditText SignName,SignNumber,SignPsw,SignPsw2;
-    private static final String Tag = "Sign up Activity";
+    private static final String Tag = "SigninActivity";
     Button SignConfirm;
     NetworkManager network;
     private PicImageView SignPic;
@@ -38,6 +42,8 @@ public class SigninActivity extends Activity implements View.OnClickListener {
     private static final int REQUIRED_SIZE = 280;
     private Uri mBitmapUri;
     private Bitmap SignBitmap;
+    private File mCacheImage;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,26 +81,17 @@ public class SigninActivity extends Activity implements View.OnClickListener {
             {
                 if(strPsw.equals(strPsw2))
                 {
-                    network.signin(strName,strPhone,strPsw,new NetworkManager.PicCallback<User>(){
+                    NetworkManager.getInstance().uploadImage(mCacheImage, new NetworkManager.PicCallback<ImageRsp>() {
                         @Override
-                        public void onSuccess(User data) {
-                            ThreadManager.getInstance().runOnUiThread(() -> {
-                                AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
-                                        .setTitle("Success")
-                                        .setMessage("Thank you for sign up")
-                                        .show();
-                            });
-
+                        public void onSuccess(ImageRsp data) {
+                            Log.i(Tag, "upload image success");
+                            register(strName, strPhone, strPsw, NetworkManager.baseUrl + data.urlSuffix);
                         }
 
                         @Override
                         public void onFail(String msg) {
-                            ThreadManager.getInstance().runOnUiThread(() -> {
-                                AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
-                                        .setTitle("Error")
-                                        .setMessage(msg)
-                                        .show();
-                            });
+                            Log.i(Tag, "upload image fail:" + msg);
+                            Toast.makeText(getBaseContext(), "upload image fail", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -141,6 +138,7 @@ public class SigninActivity extends Activity implements View.OnClickListener {
                 try {
                     SignBitmap = decodeUri(mBitmapUri);
                     SignPic.setImageBitmap(SignBitmap);
+                    saveImageToDiskCache();
                 } catch (Exception e) {
                     Log.e(Tag, e.getMessage(), e);
                 }
@@ -198,5 +196,45 @@ public class SigninActivity extends Activity implements View.OnClickListener {
         Matrix matrix = new Matrix();
         matrix.postRotate(rotate);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void saveImageToDiskCache() {
+        try {
+            mCacheImage = new File(getCacheDir() + File.separator + System.currentTimeMillis() + ".jpg");
+            FileOutputStream out = new FileOutputStream(mCacheImage);
+            SignBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+            Log.i(Tag, "saveImageToDiskCache success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            mCacheImage = null;
+        }
+    }
+
+    private void register(String strName, String strPhone, String strPsw, String avatar) {
+        Log.i(Tag, "start register:" + strName + "," + strPhone + "," + strPsw + "," + avatar);
+        network.signin(strName, strPhone, strPsw, avatar, new NetworkManager.PicCallback<NetworkManager.Rsp>() {
+            @Override
+            public void onSuccess(NetworkManager.Rsp data) {
+                Log.i(Tag, "register success");
+                ThreadManager.getInstance().runOnUiThread(() -> {
+                    Toast.makeText(getBaseContext(), "sign in success", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+
+            }
+
+            @Override
+            public void onFail(String msg) {
+                Log.i(Tag, "register fail:" + msg);
+                ThreadManager.getInstance().runOnUiThread(() -> {
+                    AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
+                            .setTitle("Error")
+                            .setMessage(msg)
+                            .show();
+                });
+            }
+        });
     }
 }
