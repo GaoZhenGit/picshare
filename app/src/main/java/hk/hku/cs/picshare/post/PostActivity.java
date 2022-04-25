@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.donkingliang.labels.LabelsView;
 import com.google.gson.JsonObject;
@@ -38,6 +40,7 @@ public class PostActivity extends BaseActivity {
     private View mPublishBtn;
     private PicImageView mImageFirst;
     private LabelsView mLabelsView;
+    private TextView mContent;
 
     private YoloV5Ncnn ncnn;
     private Bitmap mBitmapFirst;
@@ -73,6 +76,7 @@ public class PostActivity extends BaseActivity {
         mLabelsView = findViewById(R.id.labels);
         mLabelsView.clearAllSelect();
         mLabelsView.setSelectType(LabelsView.SelectType.MULTI);
+        mContent = findViewById(R.id.post_content);
     }
 
     private void initYolo() {
@@ -89,6 +93,23 @@ public class PostActivity extends BaseActivity {
                 @Override
                 public void onSuccess(ImageRsp data) {
                     Log.i(Tag, "upload image success " + data);
+                    String content = mContent.getText().toString();
+                    NetworkManager.getInstance().post(content,
+                            NetworkManager.baseUrl + data.urlSuffix,
+                            mLabelsView.getSelectLabelDatas(),
+                            new NetworkManager.PicCallback<NetworkManager.Rsp>() {
+                                @Override
+                                public void onSuccess(NetworkManager.Rsp data) {
+                                    Log.i(Tag, "post success " + data);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFail(String msg) {
+                                    Log.i(Tag, "post fail: " + msg);
+                                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
 
                 @Override

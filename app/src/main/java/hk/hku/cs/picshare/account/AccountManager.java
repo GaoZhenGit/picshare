@@ -11,6 +11,7 @@ public class AccountManager {
     private static final String KEY_UID = "KEY_UID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_EMAIL = "KEY_EMAIL";
+    private static final String KEY_AVATAR = "KEY_AVATAR";
 
     private static class InstanceHolder {
         private static AccountManager instance = new AccountManager();
@@ -28,6 +29,15 @@ public class AccountManager {
         }
     }
 
+    public User getUser() {
+        User user = new User();
+        user.email = getEmail();
+        user.name = getUserName();
+        user.id = getUid();
+        user.avatar = getAvatar();
+        return user;
+    }
+
     public String getEmail() {
         return getPreference().getString(KEY_EMAIL, "");
     }
@@ -40,15 +50,20 @@ public class AccountManager {
         return getPreference().getString(KEY_UID, "");
     }
 
+    public String getAvatar() {
+        return getPreference().getString(KEY_AVATAR, "");
+    }
+
     private SharedPreferences getPreference() {
         return PicApplication.getInstance().getSharedPreferences(KEY_ACCOUNT, Context.MODE_PRIVATE);
     }
 
-    public void setLocalUserInfo(String uid, String userName, String email) {
+    public void setLocalUserInfo(String uid, String userName, String email, String avatar) {
         SharedPreferences.Editor editor = getPreference().edit();
         editor.putString(KEY_UID, uid);
         editor.putString(KEY_USER_NAME, userName);
         editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_AVATAR, avatar);
         editor.commit();
     }
 

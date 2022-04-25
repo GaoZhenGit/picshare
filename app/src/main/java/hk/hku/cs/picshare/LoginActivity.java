@@ -59,7 +59,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void onSuccess(LoginRsp data) {
                     Log.i(Tag, "login success:" + data);
-                    AccountManager.getInstance().setLocalUserInfo(data.user.id, data.user.name, data.user.email);
+                    AccountManager.getInstance().setLocalUserInfo(data.user.id, data.user.name, data.user.email, data.user.avatar);
                     ThreadManager.getInstance().runOnUiThread(() -> {
                         waitDialog.dismiss();
                         finish();

@@ -17,6 +17,7 @@ import hk.hku.cs.picshare.account.LoginRsp;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.list.PictureItem;
 import hk.hku.cs.picshare.post.ImageRsp;
+import hk.hku.cs.picshare.post.PostReq;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -132,6 +133,34 @@ public class NetworkManager {
         });
     }
 
+    public void post(String content, String imageUrl, List<String> tagList, PicCallback<Rsp> callback) {
+        PostReq req = new PostReq();
+        req.imageUrl = imageUrl;
+        req.content = content;
+        req.setTags(tagList);
+        Gson gson = new Gson();
+        String bodyJson = gson.toJson(req);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), bodyJson);
+        Call<Rsp> call = mService.post(requestBody);
+        call.enqueue(new Callback<Rsp>() {
+            @Override
+            public void onResponse(Call<Rsp> call, Response<Rsp> response) {
+                if (response.code() != 200) {
+                    callback.onFail("code:" + response.code());
+                } else if(response.body().result.equalsIgnoreCase("success")) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFail(response.body().failReason);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Rsp> call, Throwable t) {
+                callback.onFail(t.getMessage());
+            }
+        });
+    }
+
     public void logout() {
         String uid = AccountManager.getInstance().getUid();
 
@@ -196,6 +225,8 @@ public class NetworkManager {
         Call<Rsp> register(@Body RequestBody body);
         @POST("login")
         Call<LoginRsp> login(@Body RequestBody body);
+        @POST("post")
+        Call<Rsp> post(@Body RequestBody body);
     }
 
     public static class Rsp {
