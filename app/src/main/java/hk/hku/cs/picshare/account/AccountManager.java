@@ -72,6 +72,7 @@ public class AccountManager {
         editor.putString(KEY_UID, "");
         editor.putString(KEY_USER_NAME, "");
         editor.putString(KEY_EMAIL, "");
+        editor.putString(KEY_AVATAR, "");
         editor.commit();
     }
 }

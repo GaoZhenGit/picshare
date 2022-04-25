@@ -100,10 +100,10 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         TextView_Logout.setOnClickListener(this);
 
 
-        //Interact with User Class
-        TextView_Nickname.setText("Cheng");
-        TextView_AccountID.setText("PicShare ID: C952914742");
-        Profile_Photo.load("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201705%2F28%2F20170528221848_Lyut5.thumb.400_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1651839087&t=8a68d2f4e6674b0d37e09bc10e5e4981");
+        User currentUser = AccountManager.getInstance().getUser();
+        TextView_Nickname.setText(currentUser.name);
+        TextView_AccountID.setText(String.format("Email: %s", currentUser.email));
+        Profile_Photo.loadRound(currentUser.avatar);
         //TBD: Add photo!
         //Profile_Photo
     }

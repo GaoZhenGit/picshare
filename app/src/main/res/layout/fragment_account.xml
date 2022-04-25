@@ -111,6 +111,7 @@
         app:layout_constraintStart_toStartOf="@+id/ac_textview_userinfo"
         app:layout_constraintTop_toTopOf="@+id/ac_textview_userinfo"
         app:layout_constraintVertical_bias="0.5"
+        app:defaultImageRes="@drawable/default_avatar"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
