@@ -15,6 +15,7 @@ import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.LoginRsp;
 import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.list.PictureItem;
+import hk.hku.cs.picshare.list.PictureListRsp;
 import hk.hku.cs.picshare.post.ImageRsp;
 import hk.hku.cs.picshare.post.PostReq;
 import okhttp3.MediaType;
@@ -191,26 +192,28 @@ public class NetworkManager {
     }
 
     public void getPictureList(String uid, PicCallback<List<PictureItem>> callback) {
-        //todo mock
-        ThreadManager.getInstance().submit(() -> {
-            try {
-                Thread.sleep(1000);
-                List<PictureItem> mockData = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
-                    PictureItem item = new PictureItem();
-                    item.image = "https://i0.hdslb.com/bfs/article/72585c1d8dce989dab9953035e7f92c7c8a46aed.jpg@942w_531h_progressive.webp";
-                    item.userName = "User" + i;
-                    item.content = "Content " + i + "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-                    item.uid = "uid" + i;
-                    for (int j = 0; j < i + 2; j++) {
-                        item.tags.add("Tag " + j);
-                    }
-                    item.avatar = "https://c-ssl.duitang.com/uploads/item/202004/17/20200417125937_bllwk.thumb.1000_0.jpg";
-                    mockData.add(item);
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", AccountManager.getInstance().getUser());
+        Gson gson = new Gson();
+        String bodyJson = gson.toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), bodyJson);
+        Call<PictureListRsp> call = mService.getList(requestBody);
+        call.enqueue(new Callback<PictureListRsp>() {
+            @Override
+            public void onResponse(Call<PictureListRsp> call, Response<PictureListRsp> response) {
+                if (response.code() != 200) {
+                    callback.onFail("code:" + response.code());
+                } else if(response.body().result.equalsIgnoreCase("success")) {
+                    callback.onSuccess(response.body().getItems());
+                } else {
+                    callback.onFail(response.body().failReason);
                 }
-                callback.onSuccess(mockData);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(Call<PictureListRsp> call, Throwable t) {
+                Log.i("NetworkManager", "fail");
+                callback.onFail(t.getMessage());
             }
         });
     }
@@ -227,6 +230,8 @@ public class NetworkManager {
         Call<LoginRsp> login(@Body RequestBody body);
         @POST("post")
         Call<Rsp> post(@Body RequestBody body);
+        @POST("getList")
+        Call<PictureListRsp> getList(@Body RequestBody body);
     }
 
     public static class Rsp {
