@@ -4,7 +4,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -135,9 +134,10 @@ public class NetworkManager {
 
     public void post(String content, String imageUrl, List<String> tagList, PicCallback<Rsp> callback) {
         PostReq req = new PostReq();
+        req.user = AccountManager.getInstance().getUser();
         req.imageUrl = imageUrl;
         req.content = content;
-        req.setTags(tagList);
+        req.setTagList(tagList);
         Gson gson = new Gson();
         String bodyJson = gson.toJson(req);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), bodyJson);

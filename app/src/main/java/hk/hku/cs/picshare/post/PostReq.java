@@ -11,8 +11,8 @@ public class PostReq {
     public String imageUrl;
     public List<Tag> tags = new ArrayList<>();
 
-    public void setTags(List<String> tags) {
-        tags.clear();
+    public void setTagList(List<String> tags) {
+        this.tags.clear();
         for (String t : tags) {
             Tag tag = new Tag();
             tag.name = t;
