@@ -1,11 +1,10 @@
 package hk.hku.cs.picshare.account;
 
-import androidx.annotation.NonNull;
-
 public class User {
     public String name;
     public String email;
-    public String uid;
+    public String avatar;
+    public String id;
     public String token;
 
     @Override
@@ -13,7 +12,8 @@ public class User {
         return "User{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", uid='" + uid + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", id='" + id + '\'' +
                 ", token='" + token + '\'' +
                 '}';
     }

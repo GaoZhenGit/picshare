@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 
 import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.LoginRsp;
-import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.lib.NetworkManager;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
@@ -60,7 +59,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void onSuccess(LoginRsp data) {
                     Log.i(Tag, "login success:" + data);
-                    AccountManager.getInstance().setLocalUserInfo(data.user.uid, data.user.name, data.user.email);
+                    AccountManager.getInstance().setLocalUserInfo(data.user.id, data.user.name, data.user.email);
                     ThreadManager.getInstance().runOnUiThread(() -> {
                         waitDialog.dismiss();
                         finish();

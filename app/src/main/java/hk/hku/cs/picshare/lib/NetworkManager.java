@@ -86,7 +86,7 @@ public class NetworkManager {
             public void onResponse(Call<LoginRsp> call, Response<LoginRsp> response) {
                 if (response.code() != 200) {
                     callback.onFail("code:" + response.code());
-                } else if(response.body().result.equals("success")) {
+                } else if(response.body().result.equalsIgnoreCase("success")) {
                     callback.onSuccess(response.body());
                 } else {
                     callback.onFail(response.body().failReason);
@@ -118,7 +118,7 @@ public class NetworkManager {
             public void onResponse(Call<Rsp> call, Response<Rsp> response) {
                 if (response.code() != 200) {
                     callback.onFail("code:" + response.code());
-                } else if(response.body().result.equals("success")) {
+                } else if(response.body().result.equalsIgnoreCase("success")) {
                     callback.onSuccess(response.body());
                 } else {
                     callback.onFail(response.body().failReason);

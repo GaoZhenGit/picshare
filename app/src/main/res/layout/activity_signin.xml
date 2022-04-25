@@ -48,14 +48,14 @@
         app:layout_constraintTop_toBottomOf="@+id/img_sign_userpic" />
 
     <EditText
-        android:id="@+id/edit_sign_phone"
+        android:id="@+id/edit_sign_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:background="@drawable/login_editview_input"
         android:ems="10"
         android:gravity="center"
-        android:hint="Phone"
+        android:hint="Email"
         android:inputType="textPersonName"
         android:minWidth="250dp"
         android:minHeight="50dp"
@@ -77,7 +77,7 @@
         android:minHeight="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_sign_phone" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_sign_email" />
 
     <EditText
         android:id="@+id/edit_sign_psw2"

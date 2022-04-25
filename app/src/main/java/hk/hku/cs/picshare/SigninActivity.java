@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import hk.hku.cs.picshare.account.User;
 import hk.hku.cs.picshare.lib.NetworkManager;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.lib.ThreadManager;
@@ -49,7 +46,7 @@ public class SigninActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         SignName=findViewById(R.id.edit_sign_name);
-        SignNumber=findViewById(R.id.edit_sign_phone);
+        SignNumber=findViewById(R.id.edit_sign_email);
         SignPsw=findViewById(R.id.edit_sign_psw);
         SignPsw2=findViewById(R.id.edit_sign_psw2);
         SignConfirm=findViewById(R.id.btn_sign_confirm);
@@ -64,13 +61,13 @@ public class SigninActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         if(view.getId()==R.id.btn_sign_confirm)
         {
-            String strName,strPhone,strPsw,strPsw2;
+            String strName,strEmail,strPsw,strPsw2;
             strName=SignName.getText().toString();
-            strPhone=SignNumber.getText().toString();
+            strEmail=SignNumber.getText().toString();
             strPsw=SignPsw.getText().toString();
             strPsw2=SignPsw2.getText().toString();
             //这里需要写一个传出图片的函数-->SignBitmap
-            if(strName.equals("")||strPhone.equals("")||strPsw.equals("")||strPsw2.equals(""))
+            if(strName.equals("")||strEmail.equals("")||strPsw.equals("")||strPsw2.equals(""))
             {
                 AlertDialog waitDialog = new AlertDialog.Builder(SigninActivity.this)
                         .setTitle("Error")
@@ -85,7 +82,7 @@ public class SigninActivity extends Activity implements View.OnClickListener {
                         @Override
                         public void onSuccess(ImageRsp data) {
                             Log.i(Tag, "upload image success");
-                            register(strName, strPhone, strPsw, NetworkManager.baseUrl + data.urlSuffix);
+                            register(strName, strEmail, strPsw, NetworkManager.baseUrl + data.urlSuffix);
                         }
 
                         @Override
@@ -212,9 +209,9 @@ public class SigninActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private void register(String strName, String strPhone, String strPsw, String avatar) {
-        Log.i(Tag, "start register:" + strName + "," + strPhone + "," + strPsw + "," + avatar);
-        network.signin(strName, strPhone, strPsw, avatar, new NetworkManager.PicCallback<NetworkManager.Rsp>() {
+    private void register(String strName, String strEmail, String strPsw, String avatar) {
+        Log.i(Tag, "start register:" + strName + "," + strEmail + "," + strPsw + "," + avatar);
+        network.signin(strName, strEmail, strPsw, avatar, new NetworkManager.PicCallback<NetworkManager.Rsp>() {
             @Override
             public void onSuccess(NetworkManager.Rsp data) {
                 Log.i(Tag, "register success");
