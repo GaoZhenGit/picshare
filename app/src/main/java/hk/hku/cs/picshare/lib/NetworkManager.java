@@ -218,6 +218,34 @@ public class NetworkManager {
         });
     }
 
+    public void search(String searchText, PicCallback<List<PictureItem>> callback) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", AccountManager.getInstance().getUser());
+        map.put("searchText", searchText);
+        Gson gson = new Gson();
+        String bodyJson = gson.toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), bodyJson);
+        Call<PictureListRsp> call = mService.search(requestBody);
+        call.enqueue(new Callback<PictureListRsp>() {
+            @Override
+            public void onResponse(Call<PictureListRsp> call, Response<PictureListRsp> response) {
+                if (response.code() != 200) {
+                    callback.onFail("code:" + response.code());
+                } else if(response.body().result.equalsIgnoreCase("success")) {
+                    callback.onSuccess(response.body().getItems());
+                } else {
+                    callback.onFail(response.body().failReason);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PictureListRsp> call, Throwable t) {
+                Log.i("NetworkManager", "fail");
+                callback.onFail(t.getMessage());
+            }
+        });
+    }
+
     public interface NetworkService {
         @POST("volley/person_object.json")
         Call<User> test(@Body RequestBody body);
@@ -232,6 +260,8 @@ public class NetworkManager {
         Call<Rsp> post(@Body RequestBody body);
         @POST("getList")
         Call<PictureListRsp> getList(@Body RequestBody body);
+        @POST("search")
+        Call<PictureListRsp> search(@Body RequestBody body);
     }
 
     public static class Rsp {

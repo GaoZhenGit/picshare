@@ -17,25 +17,26 @@
 
         <EditText
             android:id="@+id/search_fragment_bar"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/search_bar"
-            android:layout_marginTop="10dp"
-            android:singleLine="true"
-            android:paddingLeft="40dp"
-            android:textSize="14dp"
-            tools:text="abcdefghijklmn"
-            android:paddingRight="20dp"
-            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/search_bar"
+            android:paddingLeft="40dp"
+            android:paddingRight="20dp"
+            android:singleLine="true"
+            android:textSize="14dp"
+            android:imeOptions="actionSearch"
+            tools:text="abcdefghijklmn" />
 
         <ImageView
-            android:src="@drawable/tab_search_unselect"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
+            android:src="@drawable/tab_search_unselect" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

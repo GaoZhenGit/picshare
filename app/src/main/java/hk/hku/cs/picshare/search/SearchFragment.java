@@ -3,9 +3,13 @@ package hk.hku.cs.picshare.search;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +32,7 @@ import hk.hku.cs.picshare.post.PostActivity;
 public class SearchFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private SearchListAdapter mAdapter;
+    private EditText mSearchBar;
 
     @Override
     protected int getLayoutResId() {
@@ -49,7 +54,7 @@ public class SearchFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         initView();
-        loadData();
+        loadData("");
         return mRoot;
     }
 
@@ -58,13 +63,24 @@ public class SearchFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mAdapter = new SearchListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mSearchBar = mRoot.findViewById(R.id.search_fragment_bar);
+        mSearchBar.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                loadData(mSearchBar.getText().toString());
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
-    private void loadData() {
-        NetworkManager.getInstance().getPictureList(AccountManager.getInstance().getUid(), new NetworkManager.PicCallback<List<PictureItem>>() {
+    private void loadData(String searchText) {
+        NetworkManager.getInstance().search(searchText, new NetworkManager.PicCallback<List<PictureItem>>() {
             @Override
             public void onSuccess(List<PictureItem> data) {
-                ThreadManager.getInstance().runOnUiThread(() -> mAdapter.setData(data));
+                ThreadManager.getInstance().runOnUiThread(() -> {
+                    mAdapter.setData(data);
+                });
             }
 
             @Override
