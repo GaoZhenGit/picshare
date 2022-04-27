@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hk.hku.cs.picshare.BuildConfig;
 import hk.hku.cs.picshare.account.AccountManager;
 import hk.hku.cs.picshare.account.LoginRsp;
 import hk.hku.cs.picshare.account.User;
@@ -32,7 +33,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public class NetworkManager {
-    public static final String baseUrl = "http://3.88.236.75:8080/";
+    public static final String baseUrl = BuildConfig.ServerUrl;
     private static class InstanceHolder {
         private static NetworkManager instance = new NetworkManager();
     }

@@ -1,6 +1,7 @@
 package hk.hku.cs.picshare.post;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import hk.hku.cs.picshare.LoginActivity;
 import hk.hku.cs.picshare.base.BaseActivity;
 import hk.hku.cs.picshare.R;
 import hk.hku.cs.picshare.lib.NetworkManager;
@@ -89,6 +91,11 @@ public class PostActivity extends BaseActivity {
 
     private void publish() {
         if (mCacheImage != null) {
+            AlertDialog waitDialog = new AlertDialog.Builder(PostActivity.this)
+                    .setTitle("Login")
+                    .setCancelable(false)
+                    .setMessage("Please wait...")
+                    .show();
             NetworkManager.getInstance().uploadImage(mCacheImage, new NetworkManager.PicCallback<ImageRsp>() {
                 @Override
                 public void onSuccess(ImageRsp data) {
@@ -101,11 +108,15 @@ public class PostActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess(NetworkManager.Rsp data) {
                                     Log.i(Tag, "post success " + data);
-                                    finish();
+                                    runOnUiThread(() -> {
+                                        waitDialog.dismiss();
+                                        finish();
+                                    });
                                 }
 
                                 @Override
                                 public void onFail(String msg) {
+                                    waitDialog.dismiss();
                                     Log.i(Tag, "post fail: " + msg);
                                     Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
                                 }
