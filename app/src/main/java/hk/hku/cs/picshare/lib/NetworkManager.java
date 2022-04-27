@@ -32,7 +32,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public class NetworkManager {
-    public static final String baseUrl = "http://192.168.0.105:8080/";
+    public static final String baseUrl = "http://3.88.236.75:8080/";
     private static class InstanceHolder {
         private static NetworkManager instance = new NetworkManager();
     }
