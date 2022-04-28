@@ -92,7 +92,7 @@ public class PostActivity extends BaseActivity {
     private void publish() {
         if (mCacheImage != null) {
             AlertDialog waitDialog = new AlertDialog.Builder(PostActivity.this)
-                    .setTitle("Login")
+                    .setTitle("uploading")
                     .setCancelable(false)
                     .setMessage("Please wait...")
                     .show();

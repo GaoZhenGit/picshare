@@ -19,6 +19,7 @@ import hk.hku.cs.picshare.LoginActivity;
 import hk.hku.cs.picshare.MainActivity;
 import hk.hku.cs.picshare.PicApplication;
 import hk.hku.cs.picshare.R;
+import hk.hku.cs.picshare.WebviewActivity;
 import hk.hku.cs.picshare.base.BaseFragment;
 import hk.hku.cs.picshare.lib.PicImageView;
 import hk.hku.cs.picshare.list.PictureListAdapter;
@@ -64,11 +65,15 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         }
         else if(view.getId() == R.id.ac_textview_tag2)
         {
-            //TBD
+            Intent intent = new Intent(getContext(), WebviewActivity.class);
+            intent.putExtra(WebviewActivity.PARAM_URL, "https://store.steampowered.com/");
+            startActivity(intent);
         }
         else if(view.getId() == R.id.ac_textview_tag3)
         {
-            //TBD
+            Intent intent = new Intent(getContext(), WebviewActivity.class);
+            intent.putExtra(WebviewActivity.PARAM_URL, "https://www.hku.hk/");
+            startActivity(intent);
         }
         else if(view.getId() == R.id.ac_textview_setting)
         {
@@ -106,5 +111,16 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
         Profile_Photo.loadRound(currentUser.avatar);
         //TBD: Add photo!
         //Profile_Photo
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        User currentUser = AccountManager.getInstance().getUser();
+        if (TextView_Nickname != null && TextView_AccountID != null && Profile_Photo != null) {
+            TextView_Nickname.setText(currentUser.name);
+            TextView_AccountID.setText(String.format("Email: %s", currentUser.email));
+            Profile_Photo.loadRound(currentUser.avatar);
+        }
     }
 }
